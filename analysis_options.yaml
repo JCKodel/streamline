@@ -14,7 +14,6 @@ analyzer:
     document_ignores: ignore
     flutter_style_todos: ignore
     no_adjacent_strings_in_list: ignore
-    null_check_on_nullable_type_parameter: ignore
     only_throw_errors: ignore
     parameter_assignments: ignore
     prefer_constructors_over_static_methods: ignore

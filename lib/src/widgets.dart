@@ -280,7 +280,7 @@ final class _ActionBuilderState<TAction extends IAction<TResponse>, TResponse,
           return widget.waiterBuilder?.call(context) ?? const SizedBox.shrink();
         }
 
-        final data = (snapshot.data ?? _response)!;
+        final data = (snapshot.data ?? _response) as TResult;
 
         return widget.builder(context, data);
       },
