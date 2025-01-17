@@ -1,0 +1,24 @@
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "Streamline"
+    }
+  ],
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Build Runner Watch",
+        "command": "build_watch.sh",
+        "type": "process",
+        "presentation": {
+          "reveal": "always"
+        },
+        "isBackground": true,
+        "isBuildCommand": true,
+        "group": "build"
+      }
+    ]
+  }
+}

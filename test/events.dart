@@ -1,0 +1,173 @@
+part of 'mediator_test.dart';
+
+@MappableClass()
+final class EventA with EventAMappable implements IEvent {
+  const EventA(this.completer);
+
+  final Completer<int> completer;
+
+  static const fromMap = EventAMapper.fromMap;
+  static const fromJson = EventAMapper.fromJson;
+}
+
+@MappableClass()
+final class EventB with EventBMappable implements IEvent {
+  const EventB(this.value);
+
+  final int value;
+
+  static const fromMap = EventBMapper.fromMap;
+  static const fromJson = EventBMapper.fromJson;
+}
+
+final class EventAHandler implements IEventHandler<EventA> {
+  @override
+  Future<void> handle(EventA event) async {
+    event.completer.complete(1);
+  }
+}
+
+final class EventBHandler implements IEventHandler<EventB> {
+  const EventBHandler(this.onEvent);
+
+  final void Function(EventB event) onEvent;
+
+  @override
+  Future<void> handle(EventB event) async {
+    onEvent(event);
+  }
+}
+
+void _eventsTest() {
+  test("Event is emmited", () async {
+    final completer = Completer<int>();
+    final event = EventA(completer);
+
+    $eventHandler(EventAHandler.new);
+
+    final lastEmitted = $lastEmitted<EventA>();
+
+    expect(lastEmitted is None<EventA>, true);
+
+    $emit(event);
+
+    final lastEmittedEvent = $lastEmitted<EventA>();
+
+    expect(lastEmittedEvent is Some, true);
+    expect((lastEmittedEvent as Some<EventA>).value.completer, completer);
+
+    await pumpEventQueue();
+
+    await expectLater(
+      $eventStream<EventA>(),
+      emitsInOrder([event]),
+    );
+
+    await completer.future.timeout(const Duration(seconds: 1));
+  });
+
+  test("Event hook must filter events without watchers", () async {
+    const event = EventB(42);
+    final lastEmittedBefore = $lastEmitted<EventB>();
+
+    expect(lastEmittedBefore is None<EventB>, true);
+
+    var eventAverted = false;
+
+    $eventObserver<EventB>(
+      (EventB event) {
+        eventAverted = true;
+        return const Option<EventB>.none();
+      },
+    );
+
+    $emit(event);
+
+    await pumpEventQueue();
+
+    expect(eventAverted, true);
+
+    final lastEmittedAfter = $lastEmitted<EventB>();
+
+    expect(lastEmittedAfter is None<EventB>, true);
+  });
+
+  test("Event hook must filter events without watchers (global)", () async {
+    const event = EventB(42);
+    final lastEmittedBefore = $lastEmitted<EventB>();
+
+    expect(lastEmittedBefore is None<EventB>, true);
+
+    var eventAverted = false;
+
+    $globalEventObserver(
+      (IEvent event) {
+        if (event is! EventB) {
+          return Option<IEvent>.some(event);
+        }
+
+        eventAverted = true;
+        return const Option<IEvent>.none();
+      },
+    );
+
+    $emit(event);
+
+    await pumpEventQueue();
+
+    expect(eventAverted, true);
+
+    final lastEmittedAfter = $lastEmitted<EventB>();
+
+    expect(lastEmittedAfter is None<EventB>, true);
+  });
+
+  test("Event subscription", () async {
+    final handler = expectAsync1((int value) {
+      expect(value, 42);
+    });
+
+    final subscription = $subscribe<EventB>((event) async {
+      handler(event.value);
+    });
+
+    $emit(const EventB(42));
+    await pumpEventQueue();
+
+    subscription.cancel().ignore();
+  });
+
+  test("Pipeline", () async {
+    const event = EventB(42);
+    var pointer = 0;
+
+    $eventHandler(() => EventBHandler((event) => pointer += event.value));
+
+    var preHandler1Pointer = 0;
+    var preHandler2Pointer = 0;
+
+    $registerGenericEventBehaviour((action, next) {
+      final event = action as EventB;
+
+      preHandler1Pointer = event.value + ++pointer;
+
+      return next(event);
+    });
+
+    $registerEventBehaviour((
+      EventB action,
+      Future<void> Function(EventB) next,
+    ) {
+      preHandler2Pointer = action.value + ++pointer;
+
+      return next(event);
+    });
+
+    $emit(event);
+    $emit(EventA(Completer()));
+
+    expect(pointer, 44);
+    expect(preHandler1Pointer, 43);
+    expect(preHandler2Pointer, 44);
+  });
+}

@@ -1,0 +1,7 @@
+targets:
+  $default:
+    builders:
+      dart_mappable_builder:
+        generate_for:
+          - lib/src/*.dart
+          - example/lib/**/*.dart
