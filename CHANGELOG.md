@@ -5,3 +5,7 @@
 ## 1.0.0+1
 
 * Fix minor offense to pub.dev static analysis (I want that 160 points \O/)
+
+## 1.0.1
+
+* Fix bug in QueryBuilder without event observers (never trust Dart analysis recommendations)

@@ -164,7 +164,7 @@ final class _ActionBuilderState<TAction extends IAction<TResponse>, TResponse,
     TResult> extends State<_ActionBuilder<TAction, TResponse, TResult>> {
   Completer<TResult>? _requestCompleter;
 
-  late List<StreamSubscription<IEvent>>? _eventRefreshSubscriptions;
+  List<StreamSubscription<IEvent>>? _eventRefreshSubscriptions;
   TResult? _response;
 
   @override
