@@ -9,3 +9,7 @@
 ## 1.0.1
 
 * Fix bug in QueryBuilder without event observers (never trust Dart analysis recommendations)
+
+## 1.0.1+1
+
+* Add test badge to README.md
