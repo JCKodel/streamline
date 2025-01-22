@@ -242,7 +242,7 @@ final class _ActionBuilderState<TAction extends IAction<TResponse>, TResponse,
         ),
     };
 
-    if (response is List) {
+    if (widget is AggregatorBuilder && response is List) {
       final list = <TResponse>[];
 
       for (final result in response) {
