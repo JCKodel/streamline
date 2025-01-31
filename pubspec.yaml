@@ -3,6 +3,10 @@ description: "CQRS/Mediator Pattern library for a streamlined Flutter developmen
 version: 1.1.0
 homepage: https://github.com/JCKodel/streamline
 
+screenshots:
+  - description: "Simplified architecture diagram"
+    path: diagram.png
+
 environment:
   sdk: ^3.6.1
   flutter: ">=1.17.0"
