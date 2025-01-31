@@ -3,7 +3,7 @@
 
 Streamline is a lightweight library that brings enterprise-grade application architecture to Flutter, making it super easy to understand and implement - even if you're new to professional software development! Think of it as local micro-services for your Flutter app. 
 
-![Streamline](diagram.png?raw=true)
+![Streamline](https://raw.githubusercontent.com/JCKodel/streamline/refs/heads/main/diagram.png?raw=true)
 
 ## What's This All About? 🤔
 
