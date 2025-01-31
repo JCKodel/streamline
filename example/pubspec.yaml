@@ -11,7 +11,7 @@ dependencies:
   dart_mappable: ^4.3.0
   flutter:
     sdk: flutter
-  shared_preferences: ^2.3.5
+  shared_preferences: ^2.5.1
   streamline:
     path: ..
 

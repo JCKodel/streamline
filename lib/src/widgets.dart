@@ -126,8 +126,13 @@ sealed class _ActionBuilder<TAction extends IAction<TResponse>, TResponse,
     this.waiterBuilder,
     this.errorBuilder,
     this.eventObservers,
+    this.cacheUntilChanged,
     super.key,
   });
+
+  /// If true, the action will be cached until some eventObserver reports a
+  /// change in the underlying data.
+  final bool? cacheUntilChanged;
 
   final TAction action;
 
@@ -175,13 +180,13 @@ final class _ActionBuilderState<TAction extends IAction<TResponse>, TResponse,
       _eventRefreshSubscriptions = <StreamSubscription<IEvent>>[];
 
       for (final filter in widget.eventObservers!) {
-        final subscription = filter.listen((_) => _dispatchAction());
+        final subscription = filter.listen((_) => _dispatchAction(true));
 
         _eventRefreshSubscriptions!.add(subscription);
       }
     }
 
-    _dispatchAction();
+    _dispatchAction(false);
   }
 
   @override
@@ -189,7 +194,7 @@ final class _ActionBuilderState<TAction extends IAction<TResponse>, TResponse,
     super.didUpdateWidget(oldWidget);
 
     if (widget.action != oldWidget.action) {
-      _dispatchAction();
+      _dispatchAction(false);
     }
   }
 
@@ -204,7 +209,16 @@ final class _ActionBuilderState<TAction extends IAction<TResponse>, TResponse,
     }
   }
 
-  void _dispatchAction() {
+  void _dispatchAction(bool forceRefresh) {
+    if (forceRefresh == false && _response != null) {
+      final cacheResult = widget.cacheUntilChanged ??
+          (widget.eventObservers != null && widget.eventObservers!.isNotEmpty);
+
+      if (cacheResult) {
+        return;
+      }
+    }
+
     final isRefresh = _requestCompleter != null;
 
     _requestCompleter = Completer<TResult>();
@@ -294,6 +308,7 @@ final class AggregatorBuilder<TResponse>
   const AggregatorBuilder({
     required IAggregator<TResponse> aggregate,
     required super.builder,
+    super.cacheUntilChanged,
     super.errorBuilder,
     super.waiterBuilder,
     super.eventObservers,
@@ -319,6 +334,7 @@ final class QueryBuilder<TResponse>
   const QueryBuilder({
     required IQuery<TResponse> query,
     required super.builder,
+    super.cacheUntilChanged,
     super.onError,
     super.onResponseReceived,
     super.errorBuilder,

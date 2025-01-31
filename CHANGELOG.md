@@ -17,3 +17,7 @@
 ## 1.0.2
 
 * Fix bug in QueryBuilder where the response would be invalid if it was a list
+
+## 1.1.0
+
+* Add cache capabilities to QueryBuilder (which defaults to true when there is an event observer attached)
