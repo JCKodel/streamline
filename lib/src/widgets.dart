@@ -180,13 +180,13 @@ final class _ActionBuilderState<TAction extends IAction<TResponse>, TResponse,
       _eventRefreshSubscriptions = <StreamSubscription<IEvent>>[];
 
       for (final filter in widget.eventObservers!) {
-        final subscription = filter.listen((_) => _dispatchAction(true));
+        final subscription = filter.listen((_) => _dispatchAction());
 
         _eventRefreshSubscriptions!.add(subscription);
       }
     }
 
-    _dispatchAction(false);
+    _dispatchAction();
   }
 
   @override
@@ -194,7 +194,7 @@ final class _ActionBuilderState<TAction extends IAction<TResponse>, TResponse,
     super.didUpdateWidget(oldWidget);
 
     if (widget.action != oldWidget.action) {
-      _dispatchAction(false);
+      _dispatchAction();
     }
   }
 
@@ -209,8 +209,8 @@ final class _ActionBuilderState<TAction extends IAction<TResponse>, TResponse,
     }
   }
 
-  void _dispatchAction(bool forceRefresh) {
-    if (forceRefresh == false && _response != null) {
+  void _dispatchAction() {
+    if (_response != null) {
       final cacheResult = widget.cacheUntilChanged ??
           (widget.eventObservers != null && widget.eventObservers!.isNotEmpty);
 

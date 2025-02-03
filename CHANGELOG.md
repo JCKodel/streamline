@@ -25,3 +25,7 @@
 ## 1.1.0+1
 
 * Added architecture diagram to README.md
+
+## 1.1.1
+
+* Fix bug in cache logic of QueryBuilder
