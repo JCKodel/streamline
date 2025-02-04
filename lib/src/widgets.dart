@@ -194,6 +194,7 @@ final class _ActionBuilderState<TAction extends IAction<TResponse>, TResponse,
     super.didUpdateWidget(oldWidget);
 
     if (widget.action != oldWidget.action) {
+      _response = null;
       _dispatchAction();
     }
   }
