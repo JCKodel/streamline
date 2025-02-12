@@ -9,16 +9,15 @@ Widget _errorBuilder(
 }
 
 /// Type definition for a query handler factory function.
-typedef QueryHandlerDelegate = IQueryHandler<IQuery<dynamic>, dynamic>
-    Function();
+typedef QueryHandlerDelegate = IQueryHandler<IQuery<dynamic>, dynamic> Function();
 
 /// Type definition for a command handler factory function.
 typedef CommandHandlerDelegate = ICommandHandler<ICommand<dynamic>, dynamic>
     Function();
 
 /// Type definition for an aggregator handler factory function.
-typedef AggregatorHandlerDelegate
-    = IAggregatorHandler<IAggregator<dynamic>, dynamic> Function();
+typedef AggregatorHandlerDelegate = IAggregatorHandler<IAggregator<dynamic>, dynamic>
+    Function();
 
 /// Type definition for an event handler factory function.
 typedef EventHandlerDelegate = IEventHandler<IEvent> Function();
@@ -116,8 +115,8 @@ final class _MediatorConfigState extends State<MediatorConfig> {
   }
 }
 
-sealed class _ActionBuilder<TAction extends IAction<TResponse>, TResponse,
-    TResult> extends StatefulWidget {
+sealed class _ActionBuilder<TAction extends IAction<TResponse>, TResponse, TResult>
+    extends StatefulWidget {
   const _ActionBuilder({
     required this.action,
     required this.builder,
@@ -147,8 +146,7 @@ sealed class _ActionBuilder<TAction extends IAction<TResponse>, TResponse,
     StackTrace stackTrace,
   )? onError;
 
-  final void Function(BuildContext context, TResult response)?
-      onResponseReceived;
+  final void Function(BuildContext context, TResult response)? onResponseReceived;
 
   final Widget Function(BuildContext context)? waiterBuilder;
 
@@ -213,7 +211,7 @@ final class _ActionBuilderState<TAction extends IAction<TResponse>, TResponse,
   void _dispatchAction() {
     if (_response != null) {
       final cacheResult = widget.cacheUntilChanged ??
-          (widget.eventObservers != null && widget.eventObservers!.isNotEmpty);
+          (widget.eventObservers == null || widget.eventObservers!.isEmpty);
 
       if (cacheResult) {
         return;

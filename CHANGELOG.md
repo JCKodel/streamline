@@ -34,3 +34,8 @@
 
 * Fix bug in cache logic of QueryBuilder
 * Update dependencies
+
+## 1.1.3
+
+* Fix bug in cache logic of QueryBuilder
+* Update dependencies
