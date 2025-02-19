@@ -15,18 +15,23 @@ abstract interface class IAggregator<TResult> implements IAction<TResult> {}
 /// Multiple aggregator handlers can be registered for a specific
 /// [IAggregator].
 abstract interface class IAggregatorHandler<
-    TAggregator extends IAggregator<TResult>,
-    TResult> implements IActionHandler<TAggregator, TResult> {
+  TAggregator extends IAggregator<TResult>,
+  TResult
+>
+    implements IActionHandler<TAggregator, TResult> {
   @override
   Future<TResult> handle(TAggregator aggregator);
 }
 
 /// An aggregator dispatcher is a type that dispatches an [IAggregator] to
 /// all registered [IAggregatorHandler]s.
-final class _AggregatorDispatcher extends _DispatcherManager<
-    IAggregator<dynamic>,
-    dynamic,
-    IAggregatorHandler<IAggregator<dynamic>, dynamic>> {
+final class _AggregatorDispatcher
+    extends
+        _DispatcherManager<
+          IAggregator<dynamic>,
+          dynamic,
+          IAggregatorHandler<IAggregator<dynamic>, dynamic>
+        > {
   @override
   bool get _singleHandlersOnly => false;
 
@@ -40,9 +45,7 @@ final class _AggregatorDispatcher extends _DispatcherManager<
   ///
   /// @param aggregator The aggregator to process
   /// @returns A Future containing a list of results from all handlers
-  Future<List<TResult>> aggregate<TResult>(
-    IAggregator<TResult> aggregator,
-  ) async {
+  Future<List<TResult>> aggregate<TResult>(IAggregator<TResult> aggregator) async {
     final result = await _dispatch(aggregator);
 
     return result.cast<TResult>();

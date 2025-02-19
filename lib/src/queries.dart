@@ -30,8 +30,13 @@ abstract interface class IQueryHandler<TQuery extends IQuery<TResult>, TResult>
 
 /// A query dispatcher is a type that dispatches an [IQuery] to a registered
 /// [IQueryHandler].
-final class _QueryDispatcher extends _DispatcherManager<IQuery<dynamic>,
-    dynamic, IQueryHandler<IQuery<dynamic>, dynamic>> {
+final class _QueryDispatcher
+    extends
+        _DispatcherManager<
+          IQuery<dynamic>,
+          dynamic,
+          IQueryHandler<IQuery<dynamic>, dynamic>
+        > {
   @override
   bool get _singleHandlersOnly => true;
 

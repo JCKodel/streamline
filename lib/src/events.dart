@@ -19,9 +19,7 @@ abstract interface class IEventHandler<TEvent extends IEvent>
 /// them.
 ///
 /// Returns Some(event) to allow the event to proceed, or None() to cancel it.
-typedef EventObserver<TEvent extends IEvent> = Option<TEvent> Function(
-  TEvent event,
-);
+typedef EventObserver<TEvent extends IEvent> = Option<TEvent> Function(TEvent event);
 
 final class _EventsDispatcher
     extends _DispatcherManager<IEvent, void, IEventHandler<IEvent>> {

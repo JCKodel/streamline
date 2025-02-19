@@ -15,8 +15,7 @@ abstract interface class IAction<TResult> {
 
 /// A handler interface for processing actions of type [TAction] and producing
 /// results of type [TResult].
-abstract interface class IActionHandler<TAction extends IAction<TResult>,
-    TResult> {
+abstract interface class IActionHandler<TAction extends IAction<TResult>, TResult> {
   /// Handles the given action and returns a result.
   ///
   /// @param action The action to handle
@@ -29,10 +28,12 @@ final class _Pipeline<TAction extends IAction<TResult>, TResult> {
   _Pipeline();
 
   final List<
-      Future<TResult> Function(
-        TAction action,
-        Future<TResult> Function(TAction newAction) next,
-      )> _behaviours = [];
+    Future<TResult> Function(
+      TAction action,
+      Future<TResult> Function(TAction newAction) next,
+    )
+  >
+  _behaviours = [];
 
   void dispose() {
     _behaviours.clear();
@@ -56,8 +57,11 @@ final class _Pipeline<TAction extends IAction<TResult>, TResult> {
   }
 }
 
-abstract base class _DispatcherManager<TAction extends IAction<TResult>,
-    TResult, THandler extends IActionHandler<TAction, TResult>> {
+abstract base class _DispatcherManager<
+  TAction extends IAction<TResult>,
+  TResult,
+  THandler extends IActionHandler<TAction, TResult>
+> {
   final _pipeline = _Pipeline<TAction, TResult>();
   final _handlerFactories = <String, Set<THandler Function()>>{};
 
@@ -74,7 +78,8 @@ abstract base class _DispatcherManager<TAction extends IAction<TResult>,
     Future<TResult> Function(
       TAction action,
       Future<TResult> Function(TAction newAction) next,
-    ) behaviour,
+    )
+    behaviour,
   ) {
     _pipeline._behaviours.add(behaviour);
   }
@@ -84,43 +89,36 @@ abstract base class _DispatcherManager<TAction extends IAction<TResult>,
     Future<TResultType> Function(
       TActionType action,
       Future<TResultType> Function(TActionType newAction) next,
-    ) behaviour,
+    )
+    behaviour,
   ) {
     Future<TResult> b(
       TAction action,
       Future<TResult> Function(TAction newAction) next,
     ) =>
         behaviour(
-          action as TActionType,
-          (newAction) async => await next(newAction as TAction) as TResultType,
-        ) as Future<TResult>;
+              action as TActionType,
+              (newAction) async => await next(newAction as TAction) as TResultType,
+            )
+            as Future<TResult>;
 
     _pipeline._behaviours.add(b);
   }
 
   /// Registers a [THandler] factory for a specific [IAction].
-  void registerHandlerFactory<TActionType extends IAction<TResultType>,
-      TResultType>(
+  void registerHandlerFactory<TActionType extends IAction<TResultType>, TResultType>(
     IActionHandler<TActionType, TResultType> Function() handlerFactory,
   ) {
-    registerHandlerFactoryType(
-      TActionType,
-      handlerFactory as THandler Function(),
-    );
+    registerHandlerFactoryType(TActionType, handlerFactory as THandler Function());
   }
 
   /// Registers a [THandler] factory for a specific [IAction].
-  void registerHandlerFactoryType(
-    Type type,
-    THandler Function() handlerFactory,
-  ) {
+  void registerHandlerFactoryType(Type type, THandler Function() handlerFactory) {
     final typeName = type.toString();
 
     if (_singleHandlersOnly) {
       if (_handlerFactories.containsKey(typeName)) {
-        throw ArgumentError(
-          "A handler for $typeName has already been registered",
-        );
+        throw ArgumentError("A handler for $typeName has already been registered");
       }
     }
 
@@ -146,9 +144,7 @@ abstract base class _DispatcherManager<TAction extends IAction<TResult>,
       for (final handlerFactory in handlerFactories) {
         final handler = handlerFactory();
 
-        resultTasks.add(
-          _pipeline.execute(action, handler.handle),
-        );
+        resultTasks.add(_pipeline.execute(action, handler.handle));
       }
     }
 

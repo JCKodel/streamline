@@ -1,10 +1,6 @@
 part of '../streamline.dart';
 
-Widget _errorBuilder(
-  BuildContext context,
-  Object error,
-  StackTrace stackTrace,
-) {
+Widget _errorBuilder(BuildContext context, Object error, StackTrace stackTrace) {
   return ErrorWidget(error);
 }
 
@@ -12,12 +8,12 @@ Widget _errorBuilder(
 typedef QueryHandlerDelegate = IQueryHandler<IQuery<dynamic>, dynamic> Function();
 
 /// Type definition for a command handler factory function.
-typedef CommandHandlerDelegate = ICommandHandler<ICommand<dynamic>, dynamic>
-    Function();
+typedef CommandHandlerDelegate =
+    ICommandHandler<ICommand<dynamic>, dynamic> Function();
 
 /// Type definition for an aggregator handler factory function.
-typedef AggregatorHandlerDelegate = IAggregatorHandler<IAggregator<dynamic>, dynamic>
-    Function();
+typedef AggregatorHandlerDelegate =
+    IAggregatorHandler<IAggregator<dynamic>, dynamic> Function();
 
 /// Type definition for an event handler factory function.
 typedef EventHandlerDelegate = IEventHandler<IEvent> Function();
@@ -95,11 +91,9 @@ final class _MediatorConfigState extends State<MediatorConfig> {
     }
 
     if (widget.onInitialize != null) {
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) {
-          widget.onInitialize!();
-        },
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.onInitialize!();
+      });
     }
   }
 
@@ -135,26 +129,17 @@ sealed class _ActionBuilder<TAction extends IAction<TResponse>, TResponse, TResu
 
   final TAction action;
 
-  final Widget Function(
-    BuildContext context,
-    TResult response,
-  ) builder;
+  final Widget Function(BuildContext context, TResult response) builder;
 
-  final void Function(
-    BuildContext context,
-    Object error,
-    StackTrace stackTrace,
-  )? onError;
+  final void Function(BuildContext context, Object error, StackTrace stackTrace)?
+  onError;
 
   final void Function(BuildContext context, TResult response)? onResponseReceived;
 
   final Widget Function(BuildContext context)? waiterBuilder;
 
-  final Widget Function(
-    BuildContext context,
-    Object error,
-    StackTrace stackTrace,
-  )? errorBuilder;
+  final Widget Function(BuildContext context, Object error, StackTrace stackTrace)?
+  errorBuilder;
 
   final List<Stream<IEvent>>? eventObservers;
 
@@ -163,8 +148,12 @@ sealed class _ActionBuilder<TAction extends IAction<TResponse>, TResponse, TResu
       _ActionBuilderState<TAction, TResponse, TResult>();
 }
 
-final class _ActionBuilderState<TAction extends IAction<TResponse>, TResponse,
-    TResult> extends State<_ActionBuilder<TAction, TResponse, TResult>> {
+final class _ActionBuilderState<
+  TAction extends IAction<TResponse>,
+  TResponse,
+  TResult
+>
+    extends State<_ActionBuilder<TAction, TResponse, TResult>> {
   Completer<TResult>? _requestCompleter;
 
   List<StreamSubscription<IEvent>>? _eventRefreshSubscriptions;
@@ -210,7 +199,8 @@ final class _ActionBuilderState<TAction extends IAction<TResponse>, TResponse,
 
   void _dispatchAction() {
     if (_response != null) {
-      final cacheResult = widget.cacheUntilChanged ??
+      final cacheResult =
+          widget.cacheUntilChanged ??
           (widget.eventObservers == null || widget.eventObservers!.isEmpty);
 
       if (cacheResult) {
@@ -245,14 +235,10 @@ final class _ActionBuilderState<TAction extends IAction<TResponse>, TResponse,
   Future<TResult> requestAction(Completer<TResult> completer) async {
     final response = await switch (widget) {
       AggregatorBuilder<dynamic>() => $aggregate(
-          widget.action as IAggregator<dynamic>,
-        ),
-      CommandBuilder<dynamic>() => $dispatch(
-          widget.action as ICommand<dynamic>,
-        ),
-      QueryBuilder<dynamic>() => $request(
-          widget.action as IQuery<dynamic>,
-        ),
+        widget.action as IAggregator<dynamic>,
+      ),
+      CommandBuilder<dynamic>() => $dispatch(widget.action as ICommand<dynamic>),
+      QueryBuilder<dynamic>() => $request(widget.action as IQuery<dynamic>),
     };
 
     if (widget is AggregatorBuilder && response is List) {
@@ -356,11 +342,8 @@ final class EventBuilder<T extends IEvent> extends StatelessWidget {
   final Widget Function(BuildContext context, T event) builder;
   final Widget Function(BuildContext context)? waiterBuilder;
 
-  final Widget Function(
-    BuildContext context,
-    Object error,
-    StackTrace stackTrace,
-  )? errorBuilder;
+  final Widget Function(BuildContext context, Object error, StackTrace stackTrace)?
+  errorBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -387,7 +370,8 @@ final class EventBuilder<T extends IEvent> extends StatelessWidget {
         final data = snapshot.data ?? initialData;
 
         if (data == null) {
-          final message = "Event stream error "
+          final message =
+              "Event stream error "
               "(no data because ${snapshot.connectionState})";
 
           final ex = StateError(message);

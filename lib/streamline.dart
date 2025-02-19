@@ -83,15 +83,13 @@ final $lastEmitted = Mediator.events.getLastEmittedEvent;
 final $registerCommandBehaviour = Mediator.commands.registerBehaviour;
 
 /// Register a pipeline behaviour.
-final $registerGenericCommandBehaviour =
-    Mediator.commands.registerGenericBehaviour;
+final $registerGenericCommandBehaviour = Mediator.commands.registerGenericBehaviour;
 
 /// Register a pipeline behaviour.
 final $registerQueryBehaviour = Mediator.queries.registerBehaviour;
 
 /// Register a pipeline behaviour.
-final $registerGenericQueryBehaviour =
-    Mediator.queries.registerGenericBehaviour;
+final $registerGenericQueryBehaviour = Mediator.queries.registerGenericBehaviour;
 
 /// Register a pipeline behaviour.
 final $registerAggregatorBehaviour = Mediator.aggregators.registerBehaviour;
@@ -111,8 +109,7 @@ final $registerGenericEventBehaviour = Mediator.events.registerGenericBehaviour;
 /// Returns a [StreamSubscription] which handles events from this stream.
 StreamSubscription<TEvent> $subscribe<TEvent extends IEvent>(
   Future<void> Function(TEvent event) handler,
-) =>
-    Mediator.events.getStream<TEvent>().listen(handler);
+) => Mediator.events.getStream<TEvent>().listen(handler);
 
 /// Gets the stream of events for a specific event type.
 ///

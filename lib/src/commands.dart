@@ -13,16 +13,21 @@ part of '../streamline.dart';
 abstract interface class ICommand<TResult> implements IAction<TResult> {}
 
 /// A command handler is a type that handles an [ICommand].
-abstract interface class ICommandHandler<TCommand extends ICommand<TResult>,
-    TResult> implements IActionHandler<TCommand, TResult> {
+abstract interface class ICommandHandler<TCommand extends ICommand<TResult>, TResult>
+    implements IActionHandler<TCommand, TResult> {
   @override
   Future<TResult> handle(TCommand command);
 }
 
 /// A command dispatcher is a type that dispatches an [ICommand] to a
 /// registered [ICommandHandler].
-final class _CommandDispatcher extends _DispatcherManager<ICommand<dynamic>,
-    dynamic, ICommandHandler<ICommand<dynamic>, dynamic>> {
+final class _CommandDispatcher
+    extends
+        _DispatcherManager<
+          ICommand<dynamic>,
+          dynamic,
+          ICommandHandler<ICommand<dynamic>, dynamic>
+        > {
   @override
   bool get _singleHandlersOnly => true;
 
