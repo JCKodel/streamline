@@ -39,3 +39,7 @@
 
 * Fix bug in cache logic of QueryBuilder
 * Update dependencies
+
+## 1.1.3+1
+
+* Fix bug in EventDispatcher that was not executing any pipeline behaviours

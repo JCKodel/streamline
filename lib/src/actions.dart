@@ -146,6 +146,12 @@ abstract base class _DispatcherManager<
 
         resultTasks.add(_pipeline.execute(action, handler.handle));
       }
+    } else {
+      if (this is _EventsDispatcher) {
+        Future<TResult> emptyHandler(TAction action) async => null as TResult;
+
+        _pipeline.execute(action, emptyHandler);
+      }
     }
 
     return await resultTasks.wait;
