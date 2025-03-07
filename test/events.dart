@@ -58,10 +58,7 @@ void _eventsTest() {
 
     await pumpEventQueue();
 
-    await expectLater(
-      $eventStream<EventA>(),
-      emitsInOrder([event]),
-    );
+    await expectLater($eventStream<EventA>(), emitsInOrder([event]));
 
     await completer.future.timeout(const Duration(seconds: 1));
   });
@@ -74,12 +71,10 @@ void _eventsTest() {
 
     var eventAverted = false;
 
-    $eventObserver<EventB>(
-      (EventB event) {
-        eventAverted = true;
-        return const Option<EventB>.none();
-      },
-    );
+    $eventObserver<EventB>((EventB event) {
+      eventAverted = true;
+      return const Option<EventB>.none();
+    });
 
     $emit(event);
 
@@ -100,16 +95,14 @@ void _eventsTest() {
 
     var eventAverted = false;
 
-    $globalEventObserver(
-      (IEvent event) {
-        if (event is! EventB) {
-          return Option<IEvent>.some(event);
-        }
+    $globalEventObserver((IEvent event) {
+      if (event is! EventB) {
+        return Option<IEvent>.some(event);
+      }
 
-        eventAverted = true;
-        return const Option<IEvent>.none();
-      },
-    );
+      eventAverted = true;
+      return const Option<IEvent>.none();
+    });
 
     $emit(event);
 
@@ -137,37 +130,42 @@ void _eventsTest() {
     subscription.cancel().ignore();
   });
 
-  test("Pipeline", () async {
-    const event = EventB(42);
-    var pointer = 0;
-
-    $eventHandler(() => EventBHandler((event) => pointer += event.value));
-
-    var preHandler1Pointer = 0;
-    var preHandler2Pointer = 0;
+  test("Generic pipeline", () async {
+    final eventA = EventA(Completer());
+    const eventB = EventB(42);
+    var executions = 0;
+    var eventAExecutions = 0;
+    var eventBExecutions = 0;
 
     $registerGenericEventBehaviour((action, next) {
-      final event = action as EventB;
+      switch (action) {
+        case EventA():
+          eventAExecutions++;
+        case EventB():
+          eventBExecutions++;
+      }
 
-      preHandler1Pointer = event.value + ++pointer;
+      executions++;
 
-      return next(event);
+      return next(action);
     });
 
-    $registerEventBehaviour((
-      EventB action,
-      Future<void> Function(EventB) next,
-    ) {
-      preHandler2Pointer = action.value + ++pointer;
+    $emit(eventA);
 
-      return next(event);
-    });
+    expect(executions, 1);
+    expect(eventAExecutions, 1);
+    expect(eventBExecutions, 0);
 
-    $emit(event);
-    $emit(EventA(Completer()));
+    $emit(eventB);
 
-    expect(pointer, 44);
-    expect(preHandler1Pointer, 43);
-    expect(preHandler2Pointer, 44);
+    expect(executions, 2);
+    expect(eventAExecutions, 1);
+    expect(eventBExecutions, 1);
+
+    $emit(const EventB(3));
+
+    expect(executions, 3);
+    expect(eventAExecutions, 1);
+    expect(eventBExecutions, 2);
   });
 }
