@@ -107,7 +107,13 @@ final class _EventsDispatcher
   ///
   /// The event passes through observers first, then is sent to handlers and
   /// added to the appropriate stream.
-  void emit<TEvent extends IEvent>(TEvent event) {
+  ///
+  /// [skipIfSameAsLastEmitted] is used to prevent or allow the same event to be
+  /// emitted if the last emiited [TEvent] is the same as the new one.
+  void emit<TEvent extends IEvent>(
+    TEvent event, {
+    bool skipIfSameAsLastEmitted = true,
+  }) {
     var currentEvent = Option<IEvent>.some(event);
     final hooks = _eventObservers[TEvent.toString()];
 
@@ -133,10 +139,26 @@ final class _EventsDispatcher
       }
     }
 
-    _dispatch(event, true);
+    switch (currentEvent) {
+      case None():
+        return;
+      case Some():
+    }
+
+    if (skipIfSameAsLastEmitted) {
+      final lastEmittedEvent = getLastEmittedEvent<TEvent>();
+
+      if (lastEmittedEvent case Some()) {
+        if (lastEmittedEvent.value == currentEvent.value) {
+          return;
+        }
+      }
+    }
+
+    _dispatch(currentEvent.value, true);
 
     final subject = _getSubjectByType<TEvent>();
 
-    subject.add(event);
+    subject.add(currentEvent.value as TEvent);
   }
 }

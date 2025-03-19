@@ -168,4 +168,105 @@ void _eventsTest() {
     expect(eventAExecutions, 1);
     expect(eventBExecutions, 2);
   });
+
+  test("Event handler with pipeline", () async {
+    _EventBHandler.handleCount = 0;
+
+    var genericBehaviorCount = 0;
+    var globalBehaviorCount = 0;
+    var eventArgument = 41;
+
+    eventArgument++;
+
+    $registerGenericEventBehaviour((e, next) {
+      genericBehaviorCount++;
+      return next(e);
+    });
+
+    Mediator.events.registerGlobalObserver((e) {
+      globalBehaviorCount++;
+      return Some(e);
+    });
+
+    $eventHandler<EventB, void>(_EventBHandler.new);
+
+    expect(genericBehaviorCount, 0);
+    expect(globalBehaviorCount, 0);
+    expect(_EventBHandler.handleCount, 0);
+
+    $emit(EventB(eventArgument));
+
+    expect(genericBehaviorCount, 1);
+    expect(globalBehaviorCount, 1);
+    expect(_EventBHandler.handleCount, 1);
+
+    $emit(EventB(eventArgument));
+
+    expect(genericBehaviorCount, 1);
+    expect(globalBehaviorCount, 2);
+    expect(_EventBHandler.handleCount, 1);
+
+    eventArgument++;
+    $emit(EventB(eventArgument));
+
+    expect(genericBehaviorCount, 2);
+    expect(globalBehaviorCount, 3);
+    expect(_EventBHandler.handleCount, 2);
+  });
+
+  test("Event handler with pipeline duplicate allowed", () async {
+    _EventBHandler.handleCount = 0;
+
+    var genericBehaviorCount = 0;
+    var globalBehaviorCount = 0;
+    var eventArgument = 41;
+
+    eventArgument++;
+
+    $registerGenericEventBehaviour((e, next) {
+      genericBehaviorCount++;
+      return next(e);
+    });
+
+    Mediator.events.registerGlobalObserver((e) {
+      globalBehaviorCount++;
+      return Some(e);
+    });
+
+    $eventHandler<EventB, void>(_EventBHandler.new);
+
+    expect(genericBehaviorCount, 0);
+    expect(globalBehaviorCount, 0);
+    expect(_EventBHandler.handleCount, 0);
+
+    $emit(EventB(eventArgument), skipIfSameAsLastEmitted: false);
+
+    expect(genericBehaviorCount, 1);
+    expect(globalBehaviorCount, 1);
+    expect(_EventBHandler.handleCount, 1);
+
+    $emit(EventB(eventArgument), skipIfSameAsLastEmitted: false);
+
+    expect(genericBehaviorCount, 2);
+    expect(globalBehaviorCount, 2);
+    expect(_EventBHandler.handleCount, 2);
+
+    eventArgument++;
+    $emit(EventB(eventArgument), skipIfSameAsLastEmitted: false);
+
+    expect(genericBehaviorCount, 3);
+    expect(globalBehaviorCount, 3);
+    expect(_EventBHandler.handleCount, 3);
+  });
+}
+
+final class _EventBHandler implements IEventHandler<EventB> {
+  const _EventBHandler();
+
+  static int handleCount = 0;
+
+  @override
+  Future<void> handle(EventB action) async {
+    handleCount++;
+  }
 }

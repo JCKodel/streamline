@@ -43,3 +43,8 @@
 ## 1.1.3+1
 
 * Fix bug in EventDispatcher that was not executing any pipeline behaviours
+
+## 1.2.0
+
+* Bump dependencies
+* Added `skipIfSameAsLastEmitted` option to `$emit` to prevent or allow the same event to be emitted if the last emiited event is the same as the new one (defaults to true)

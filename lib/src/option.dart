@@ -21,6 +21,9 @@ sealed class Option<TValue> {
   /// [None] is a type that does not contain a value.
   const factory Option.none() = None<TValue>;
 
+  static Option<TValue> from<TValue>(TValue? value) =>
+      value == null ? None<TValue>() : Some<TValue>(value);
+
   /// Maps the [Option] to a new [Option] based on the provided [onSome] and
   /// [onNone] functions.
   T map<T>({
