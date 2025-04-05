@@ -48,3 +48,9 @@
 
 * Bump dependencies
 * Added `skipIfSameAsLastEmitted` option to `$emit` to prevent or allow the same event to be emitted if the last emiited event is the same as the new one (defaults to true)
+
+## 1.3.0
+
+* Changed the behavior of `MediatorConfig.onInitialize` to be a Future<void> instead of a void Function(). It also now runs on a `Future<void>` instead of running in the next frame
+* Added `onInitializeWaitingBuilder` to MediatorConfig to allow for a custom widget to be shown while `onInitialize` is running
+

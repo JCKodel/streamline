@@ -28,6 +28,7 @@ final class MediatorConfig extends StatefulWidget {
   const MediatorConfig({
     required this.child,
     this.onInitialize,
+    this.onInitializeWaitingBuilder,
     this.commandHandlers,
     this.queryHandlers,
     this.aggregatorHandlers,
@@ -36,7 +37,11 @@ final class MediatorConfig extends StatefulWidget {
   });
 
   /// Callback executed after widget initialization
-  final void Function()? onInitialize;
+  final Future<void> Function()? onInitialize;
+
+  /// Widget to show while [onInitialize] is running
+  /// If null, a [SizedBox.shrink] is used
+  final Widget Function(BuildContext context)? onInitializeWaitingBuilder;
 
   // Map of command types to their handler factories
   final Map<Type, CommandHandlerDelegate>? commandHandlers;
@@ -58,6 +63,8 @@ final class MediatorConfig extends StatefulWidget {
 }
 
 final class _MediatorConfigState extends State<MediatorConfig> {
+  Future<void>? _initializeFuture;
+
   @override
   void initState() {
     super.initState();
@@ -91,9 +98,7 @@ final class _MediatorConfigState extends State<MediatorConfig> {
     }
 
     if (widget.onInitialize != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        widget.onInitialize!();
-      });
+      _initializeFuture = widget.onInitialize!();
     }
   }
 
@@ -105,7 +110,20 @@ final class _MediatorConfigState extends State<MediatorConfig> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+    if (_initializeFuture == null) {
+      return widget.child;
+    }
+
+    return FutureBuilder(
+      future: _initializeFuture,
+      builder:
+          (context, snapshot) => switch (snapshot.connectionState) {
+            ConnectionState.waiting =>
+              widget.onInitializeWaitingBuilder?.call(context) ??
+                  const SizedBox.shrink(),
+            _ => widget.child,
+          },
+    );
   }
 }
 

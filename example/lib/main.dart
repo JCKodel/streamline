@@ -32,9 +32,10 @@ Future<void> main() async {
     // Notice that you can do that manually, using, for instance the
     // [Mediator.$queryHandler] method or any other method in [Mediator].
     MediatorConfig(
-      // This method will be called after all handlers are registered and
-      // the widget is rendered.
-      onInitialize: () => debugPrint("Mediator initialized!"),
+      // This method will be called after all handlers are registered
+      onInitialize: () async => debugPrint("Mediator initialized!"),
+      // If this is null, a [SizedBox.shrink] is used:
+      onInitializeWaitingBuilder: (context) => const Text("Initializing..."),
       // Here we register all our request handlers. Notice that we are creating
       // our ToDo repository and passing it here (so, basically, this is a
       // singleton dependency being injected to whomever needs it). If you wish,
