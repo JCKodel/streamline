@@ -1,114 +1,89 @@
 # Streamline ![Test Badge](https://github.com/JCKodel/streamline/actions/workflows/dart.yml/badge.svg)
-### CQRS/Mediator Pattern for Flutter - The Simple Way! 🚀
 
-Streamline is a lightweight library that brings enterprise-grade application architecture to Flutter, making it super easy to understand and implement - even if you're new to professional software development! Think of it as local micro-services for your Flutter app. 
+# Flutter Mediator Pattern Library
+
+A Flutter library that helps you write cleaner, more maintainable apps by separating business logic from UI and data layers using the Mediator pattern.
 
 ![Streamline](https://raw.githubusercontent.com/JCKodel/streamline/refs/heads/main/diagram.png?raw=true)
 
-## What's This All About? 🤔
+## Why Use This Library?
 
-Think of Streamline as a smart messenger for your app. Instead of components talking directly to each other (which can get messy), they send messages through a central hub. It's like having a super-organized assistant managing all communication in your app!
+When building Flutter apps, it's easy to end up with messy code where business logic, UI, and data access are all mixed together. This library helps you organize your code better by thinking in terms of:
 
-## Core Concepts Made Simple 📚
+- **Questions** your app needs to answer
+- **Commands** your app needs to execute
+- **Events** that happen in your app
 
-### Commands & Queries
-- **Commands**: Actions that change things (like "CreateUser" or "UpdateProfile")
-- **Queries**: Questions that just get information (like "GetUserProfile" or "GetTodoList")
+## Core Concepts
 
-### Events
-- Think of these as announcements about things that happened
-- Example: "UserSignedIn", "ProfileUpdated", "TodoCreated"
-- Great for updating different parts of your app when something important happens
+### 1. Questions (Queries)
 
-### Aggregators
-- Special queries that collect information from multiple sources
-- Perfect for features like calendars where you need to gather events from different parts of your app. "GetAllCalendarEvents" might collect meetings, tasks, and reminders to show them all on one calendar UI.
+These are requests for information your app needs. For example:
+- "Who is the currently logged-in user?"
+- "What items are in the shopping cart?"
+- "What is the total order amount?"
 
-## Flutter Widgets That Make Life Easier 🎯
+### 2. Commands
 
-### QueryBuilder
-```dart
-// Simple usage
-QueryBuilder<UserProfile>(
-  query: GetUserProfileQuery(),
-  builder: (context, profile) => Text(profile.name),
-)
+These are actions your app needs to perform. For example:
 
-// With event observers to auto-refresh
-QueryBuilder<UserProfile>(
-  query: GetUserProfileQuery(),
-  builder: (context, profile) => Text(profile.name),
-  eventObservers: [
-    // Refresh when user updates their profile
-    Mediator.events.getStream<UserProfileUpdated>(),
-    // Also refresh when user changes their settings
-    Mediator.events.getStream<UserSettingsChanged>(),
-  ],
-  // Optional loading widget
-  waiterBuilder: (context) => CircularProgressIndicator(),
-  // Optional error handler
-  errorBuilder: (context, error, stackTrace) => Text('Oops! $error'),
-)
-```
+- "Sign in with Google"
+- "Add product to cart"
+- "Place order"
 
-## Why Should You Use Streamline? ✨ 
+### 3. Domain Events
 
-**Keep Things Organized:** Each piece of your app has a clear job
+These are notifications about important things that happened in your app. For example:
 
-**Easy to Test:** Commands and queries are isolated and simple to test
+- "User signed in"
+- "Product added to cart"
+- "Order placed"
 
-**Flexible:** Need to add new features? Just add new commands/queries!
+## Getting Started
 
-**Flutter-Friendly:** Built specifically for Flutter developers
-
-**Beginner-Friendly:** No PhD in software architecture required!
-
-## Getting Started 🚀
-Add to your pubspec.yaml:
+### 1. Installation
+Add this to your pubspec.yaml:
 
 ```yaml
 dependencies:
-  streamline: ^1.0.0
+  streamline: any
 ```
 
-Import and start using:
+### 2. How state is managed
 
-```dart
-import 'package:streamline/streamline.dart';
-```
+All UI state is managed by queries (for example: get the list of available products). You'll use `QueryBuilder` for that, especifying the query you want to call and the builder will run with the query result. This widget will re-ask the query whenever one of its event observers catch a new event (for example: when some part of your app creates a new product, it will emit a `ProductAdded` event. The `QueryBuilder` that shows the list of products can listen to that event (with filters, if you need) and re-run the query, rebuilding the UI if something has changed.
 
-### Examples 📱
+### 3. Example App
 
-Check the [examples folder](https://github.com/JCKodel/streamline/tree/main/example) for a ToDo list app using this architecture!
+Check out the example folder for a complete Todo app implementation that demonstrates:
 
-### Dependencies 📦
+- How to structure your app using this pattern
+- How to handle user interactions
+- How to manage state
+- How to respond to domain events
 
-- [dart_mappable](https://pub.dev/packages/dart_mappable) Dart Mappable is a very good library that implements value equality, copyWith, pretty toString and JSON serialization for your models and messages.
+# Benefits
 
-> ⚠️⚠️⚠️ IMPORTANT: ⚠️⚠️⚠️: All your commands, queries, events and aggregators must use dart_mappable (we are requesting an specific interface (`IAction<TResult>`, with `toJson` and `toMap` methods) for you to remember this). This is important to avoid unnecessary rebuilds both in events and queries.
+## Clean Separation of Concerns
 
-- [rxdart](https://pub.dev/packages/rxdart) RxDart is a reactive programming library for Dart and Flutter. We use the Behavior Subject stream implementation to keep track of the last emitted event, so you don't need to store the last state.
+- UI layer only handles display and user input
+- Business logic is isolated in handlers
+- Data access is separated from business rules
 
-### Need Help? 🆘
+## Easy to Test
 
-[Issue Tracker](https://github.com/JCKodel/streamline/issues)
+- Business logic can be tested without UI
+- Clear inputs (Commands/Queries) and outputs
+- Better Maintainability
+- Each piece of functionality has a clear place
+- Easy to understand what your app can do
+- Simple to add new features
 
-### Contributing 🤝
+## Learn More
 
-We love contributions! Whether it's:
+For more detailed information:
 
-* Reporting bugs
-* Improving documentation
-* Adding new features
-* Fixing bugs
+- Check out the API Documentation: https://pub.dev/documentation/streamline/latest/
+- Look at the Example App: https://github.com/JCKodel/streamline/tree/main/example
+- Read about the Mediator Pattern: https://en.wikipedia.org/wiki/Mediator_pattern
 
-Feel free to open an issue or submit a pull request!
-
-### License
-
-This package is licensed under the GNU AGPL v3 license.
-
-Important licensing notes:
-- 👉 **You can freely use this package in your applications (commercial or non-commercial) without having to license your entire application under AGPL** 👈
-- The AGPL license only applies if you modify **THIS** package's source code
-- If you modify this package's source code and distribute it (either directly or as part of a network service), you must make your modifications available under AGPL v3
