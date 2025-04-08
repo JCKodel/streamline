@@ -57,3 +57,7 @@
 ## 1.4.0
 
 * Added global event observers to QueryBuilder and AggregatorBuilder (useful for refreshing the UI when a data sync occurs or when a database table changes)
+
+## 1.4.0+1
+
+* Better README.md (I hope)
