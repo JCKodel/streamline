@@ -6,6 +6,8 @@
 
 A simple yet powerful library to implement the Mediator pattern in your Flutter applications, promoting clean architecture and separation of concerns.
 
+![Streamline](https://raw.githubusercontent.com/JCKodel/streamline/refs/heads/main/diagram.png?raw=true)
+
 ---
 
 ## The Problem: Tangled Code
@@ -108,10 +110,10 @@ Usually, your handlers are always the same, having no code other than the busine
 
 1.  **Add Dependency:** Add the library to your `pubspec.yaml`:
 
-    ```yaml
-    dependencies:
-      streamline: ^latest_version # check the latest version on pub.dev
-    ```
+```yaml
+dependencies:
+  streamline: ^latest_version # check the latest version on pub.dev
+```
 
 2.  **Configure Mediator:** 
 
