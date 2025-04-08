@@ -54,3 +54,6 @@
 * Changed the behavior of `MediatorConfig.onInitialize` to be a Future<void> instead of a void Function(). It also now runs on a `Future<void>` instead of running in the next frame
 * Added `onInitializeWaitingBuilder` to MediatorConfig to allow for a custom widget to be shown while `onInitialize` is running
 
+## 1.4.0
+
+* Added global event observers to QueryBuilder and AggregatorBuilder (useful for refreshing the UI when a data sync occurs or when a database table changes)

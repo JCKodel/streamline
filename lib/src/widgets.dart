@@ -174,21 +174,28 @@ final class _ActionBuilderState<
     extends State<_ActionBuilder<TAction, TResponse, TResult>> {
   Completer<TResult>? _requestCompleter;
 
-  List<StreamSubscription<IEvent>>? _eventRefreshSubscriptions;
+  final _eventRefreshSubscriptions = <StreamSubscription<IEvent>>[];
+
   TResult? _response;
 
   @override
   void initState() {
     super.initState();
 
+    final observers = switch (widget) {
+      AggregatorBuilder() => AggregatorBuilder.globalEventObservers.toSet(),
+      CommandBuilder() => <Stream<IEvent>>{},
+      QueryBuilder() => QueryBuilder.globalEventObservers.toSet(),
+    };
+
     if (widget.eventObservers != null) {
-      _eventRefreshSubscriptions = <StreamSubscription<IEvent>>[];
+      observers.addAll(widget.eventObservers!);
+    }
 
-      for (final filter in widget.eventObservers!) {
-        final subscription = filter.listen((_) => _dispatchAction());
+    for (final filter in observers) {
+      final subscription = filter.listen((_) => _dispatchAction());
 
-        _eventRefreshSubscriptions!.add(subscription);
-      }
+      _eventRefreshSubscriptions.add(subscription);
     }
 
     _dispatchAction();
@@ -208,10 +215,8 @@ final class _ActionBuilderState<
   void dispose() {
     super.dispose();
 
-    if (_eventRefreshSubscriptions != null) {
-      for (final subscription in _eventRefreshSubscriptions!) {
-        subscription.cancel();
-      }
+    for (final subscription in _eventRefreshSubscriptions) {
+      subscription.cancel();
     }
   }
 
@@ -317,6 +322,8 @@ final class AggregatorBuilder<TResponse>
     super.eventObservers,
     super.key,
   }) : super(action: aggregate);
+
+  static final List<Stream<IEvent>> globalEventObservers = [];
 }
 
 /// Widget that executes a command and builds UI based on its result.
@@ -345,6 +352,8 @@ final class QueryBuilder<TResponse>
     super.eventObservers,
     super.key,
   }) : super(action: query);
+
+  static final List<Stream<IEvent>> globalEventObservers = [];
 }
 
 /// Widget that observes events of type T and builds UI based on the latest
