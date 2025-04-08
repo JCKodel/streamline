@@ -33,6 +33,7 @@ final class MediatorConfig extends StatefulWidget {
     this.queryHandlers,
     this.aggregatorHandlers,
     this.eventHandlers,
+    this.globalEventObservers,
     super.key,
   });
 
@@ -54,6 +55,10 @@ final class MediatorConfig extends StatefulWidget {
 
   /// Map of event types to their handler factories
   final Map<Type, List<EventHandlerDelegate>>? eventHandlers;
+
+  /// List of event observers that will be added [QueryBuilder]
+  /// and [AggregatorBuilder]
+  final List<Stream<IEvent>>? globalEventObservers;
 
   /// Child widget to render
   final Widget child;
@@ -99,6 +104,11 @@ final class _MediatorConfigState extends State<MediatorConfig> {
 
     if (widget.onInitialize != null) {
       _initializeFuture = widget.onInitialize!();
+    }
+
+    if (widget.globalEventObservers != null) {
+      QueryBuilder.globalEventObservers.addAll(widget.globalEventObservers!);
+      AggregatorBuilder.globalEventObservers.addAll(widget.globalEventObservers!);
     }
   }
 

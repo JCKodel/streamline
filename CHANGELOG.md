@@ -61,3 +61,7 @@
 ## 1.4.0+2
 
 * Better README.md (I hope)
+
+## 1.4.1
+
+* Added globalEventObservers to MediatorConfig (it is applied to both QueryBuilder and AggregatorBuilder)
