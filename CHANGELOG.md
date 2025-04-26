@@ -69,3 +69,7 @@
 ## 1.4.2
 
 * Downgrading rxdart to >= 0.26.0 to allow usage with gql_websocket_link and NHost
+
+## 1.4.2+1
+
+* Fix tests
