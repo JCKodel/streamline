@@ -65,3 +65,7 @@
 ## 1.4.1
 
 * Added globalEventObservers to MediatorConfig (it is applied to both QueryBuilder and AggregatorBuilder)
+
+## 1.4.2
+
+* Downgrading rxdart to >= 0.26.0 to allow usage with gql_websocket_link and NHost

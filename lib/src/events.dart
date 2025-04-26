@@ -78,7 +78,7 @@ final class _EventsDispatcher
   Option<TEvent> getLastEmittedEvent<TEvent extends IEvent>() {
     final typeName = TEvent.toString();
     final subject = _eventSubjects[typeName];
-    final value = subject?.valueOrNull;
+    final value = (subject?.hasValue == false) ? subject!.value : null;
 
     return switch (value) {
       null => const Option.none(),
