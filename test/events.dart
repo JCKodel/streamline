@@ -258,6 +258,31 @@ void _eventsTest() {
     expect(globalBehaviorCount, 3);
     expect(_EventBHandler.handleCount, 3);
   });
+
+  test("Event reemission should work", () async {
+    final eventA = EventA(Completer());
+    var executions = 0;
+
+    final sub1 = $eventStream<EventA>().listen((_) {
+      executions++;
+    });
+
+    $emit(eventA);
+    await pumpEventQueue();
+    expect(executions, 1);
+    sub1.cancel().ignore();
+
+    await pumpEventQueue();
+
+    $eventStream<EventA>().listen((_) => executions++);
+
+    await pumpEventQueue();
+
+    expect(executions, 1);
+    $emit(eventA);
+    await pumpEventQueue();
+    expect(executions, 2);
+  });
 }
 
 final class _EventBHandler implements IEventHandler<EventB> {

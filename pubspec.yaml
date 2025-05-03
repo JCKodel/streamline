@@ -1,6 +1,6 @@
 name: streamline
 description: "CQRS/Mediator Pattern library for a streamlined Flutter development"
-version: 1.4.2+1
+version: 1.4.3
 homepage: https://github.com/JCKodel/streamline
 
 screenshots:

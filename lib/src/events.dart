@@ -50,6 +50,11 @@ final class _EventsDispatcher
 
   BehaviorSubject<TEvent> _getSubjectByType<TEvent extends IEvent>() {
     final typeName = TEvent.toString();
+
+    if (typeName == "IEvent") {
+      throw ArgumentError("This method should be called with a specific event type");
+    }
+
     final subject = _eventSubjects[typeName] ??= BehaviorSubject<TEvent>();
 
     return subject as BehaviorSubject<TEvent>;
@@ -60,6 +65,11 @@ final class _EventsDispatcher
   /// Returns a [ValueStream] that emits events of type [TEvent].
   ValueStream<TEvent> getStream<TEvent extends IEvent>() {
     final typeName = TEvent.toString();
+
+    if (typeName == "IEvent") {
+      throw ArgumentError("This method should be called with a specific event type");
+    }
+
     final stream = _eventStreams[typeName];
 
     if (stream != null) {
@@ -77,6 +87,11 @@ final class _EventsDispatcher
   /// event has been emitted.
   Option<TEvent> getLastEmittedEvent<TEvent extends IEvent>() {
     final typeName = TEvent.toString();
+
+    if (typeName == "IEvent") {
+      throw ArgumentError("This method should be called with a specific event type");
+    }
+
     final subject = _eventSubjects[typeName];
 
     final value =
@@ -111,7 +126,7 @@ final class _EventsDispatcher
   /// added to the appropriate stream.
   ///
   /// [skipIfSameAsLastEmitted] is used to prevent or allow the same event to be
-  /// emitted if the last emiited [TEvent] is the same as the new one.
+  /// emitted if the last emited [TEvent] is the same as the new one.
   void emit<TEvent extends IEvent>(
     TEvent event, {
     bool skipIfSameAsLastEmitted = true,

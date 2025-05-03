@@ -73,3 +73,7 @@
 ## 1.4.2+1
 
 * Fix tests
+
+## 1.4.3
+
+* When an event is emitted with `skipIfSameAsLastEmitted` set to false, it no longer kept as the last emitted event (fixes retriggering of events after a widget rebuild)
