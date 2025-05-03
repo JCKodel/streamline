@@ -61,6 +61,12 @@ These are notifications about important things that happened in your app. For ex
 - "Product added to cart"
 - "Order placed"
 
+### 4. Messages
+
+Messages are simpler events that you can use to communcate between different parts of your application, without the need to use events, pipeline behaviours, etc. They differ from events in that they don't have handlers, observers, pipelines and they always trigger the handlers, no matter if the previous message is the same. Also, events are retriggered when new subscribers are added and you can get the last emitted event. Messages are volatile and are not stored anywhere (so new listeners do not receive previous messages).
+
+Messages are useful for communicating between different widgets, for example, when you have an `AppBar` in a parent widget and you want to relay the button taps to a child widget (or vice-versa).
+
 ## How does it work?
 
 Instead of components calling each other directly, they communicate through a central **Mediator**. You structure your business logic around three core concepts:

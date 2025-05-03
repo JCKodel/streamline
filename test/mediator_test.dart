@@ -5,11 +5,12 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:streamline/streamline.dart';
 
-part 'commands.dart';
-part 'queries.dart';
-part 'events.dart';
 part 'aggregators.dart';
+part 'commands.dart';
+part 'events.dart';
 part 'mediator_test.mapper.dart';
+part 'messages.dart';
+part 'queries.dart';
 
 void main() {
   tearDown(Mediator.dispose);
@@ -21,4 +22,6 @@ void main() {
   group("Events", _eventsTest);
 
   group("Queries", _queriesTest);
+
+  group("Messages", _messagesTest);
 }

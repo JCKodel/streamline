@@ -12,6 +12,7 @@ part 'src/aggregators.dart';
 part 'src/commands.dart';
 part 'src/events.dart';
 part 'src/mediator.dart';
+part 'src/message.dart';
 part 'src/option.dart';
 part 'src/queries.dart';
 part 'src/widgets.dart';
@@ -21,6 +22,19 @@ part 'src/widgets.dart';
 /// The event passes through observers first, then is sent to handlers and
 /// added to the appropriate stream.
 final $emit = Mediator.events.emit;
+
+/// Emits a message to all registered handlers.
+///
+/// A message differs from an event in that it doesn't have handlers, observers,
+/// pipelines and it always triggers the handlers, no matter if the previous
+/// message is the same. Also, new listeners do NOT receive previous messages.
+final $publish = Mediator.messages.publish;
+
+/// Registers a handler for a specific message type.
+final $addMessageHandler = Mediator.messages.addMessageHandler;
+
+/// Unregisters a handler for a specific message type.
+final $removeMessageHandler = Mediator.messages.removeMessageHandler;
 
 /// Dispatches a command to its registered handler and returns the result.
 ///
@@ -115,3 +129,5 @@ StreamSubscription<TEvent> $subscribe<TEvent extends IEvent>(
 ///
 /// Returns a [ValueStream] that emits events of the event type.
 final $eventStream = Mediator.events.getStream;
+
+final $messages = Mediator.messages;

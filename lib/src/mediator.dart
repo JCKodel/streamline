@@ -34,6 +34,11 @@ final class Mediator {
   /// results combined.
   static final aggregators = _AggregatorDispatcher();
 
+  /// Messages are simpler events that you can use to communcate between
+  /// different parts of your application, without the need to use events,
+  /// pipeline behaviours, etc.
+  static final messages = _MessagesDispatcher();
+
   /// Disposes all dispatchers and cleans up resources.
   ///
   /// Should be called when the application is shutting down or the mediator

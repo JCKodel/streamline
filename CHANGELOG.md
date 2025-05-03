@@ -74,6 +74,6 @@
 
 * Fix tests
 
-## 1.4.3
+## 1.5.0
 
-* When an event is emitted with `skipIfSameAsLastEmitted` set to false, it no longer kept as the last emitted event (fixes retriggering of events after a widget rebuild)
+* Added a new dispatcher for *Messages*. Messages are simpler events that you can use to communcate between different parts of your application, without the need to use events, pipeline behaviours, etc.
