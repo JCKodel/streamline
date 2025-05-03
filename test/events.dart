@@ -271,17 +271,34 @@ void _eventsTest() {
     await pumpEventQueue();
     expect(executions, 1);
     sub1.cancel().ignore();
-
     await pumpEventQueue();
-
     $eventStream<EventA>().listen((_) => executions++);
-
     await pumpEventQueue();
-
-    expect(executions, 1);
+    expect(executions, 2);
     $emit(eventA);
     await pumpEventQueue();
     expect(executions, 2);
+  });
+
+  test("Event reemission without cache should work", () async {
+    final eventA = EventA(Completer());
+    var executions = 0;
+
+    final sub1 = $eventStream<EventA>().listen((_) {
+      executions++;
+    });
+
+    $emit(eventA, skipIfSameAsLastEmitted: false);
+    await pumpEventQueue();
+    expect(executions, 1);
+    sub1.cancel().ignore();
+    await pumpEventQueue();
+    $eventStream<EventA>().listen((_) => executions++);
+    await pumpEventQueue();
+    expect(executions, 2);
+    $emit(eventA, skipIfSameAsLastEmitted: false);
+    await pumpEventQueue();
+    expect(executions, 3);
   });
 }
 
