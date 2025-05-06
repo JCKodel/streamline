@@ -230,7 +230,7 @@ final class _ActionBuilderState<
     }
   }
 
-  void _dispatchAction() {
+  Future<void> _dispatchAction() async {
     if (_response != null) {
       final cacheResult =
           widget.cacheUntilChanged ??
@@ -245,23 +245,27 @@ final class _ActionBuilderState<
 
     _requestCompleter = Completer<TResult>();
 
-    requestAction(_requestCompleter!).then((value) {
-      _response = value;
+    final value = await requestAction(_requestCompleter!);
 
-      if (mounted == false) {
-        return;
-      }
+    if (value == _response) {
+      return;
+    }
 
-      if (widget.onResponseReceived != null) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          widget.onResponseReceived?.call(context, value);
-        });
-      }
+    _response = value;
 
-      if (isRefresh) {
-        setState(() {});
-      }
-    });
+    if (mounted == false) {
+      return;
+    }
+
+    if (widget.onResponseReceived != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.onResponseReceived?.call(context, value);
+      });
+    }
+
+    if (isRefresh) {
+      setState(() {});
+    }
   }
 
   @protected

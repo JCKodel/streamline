@@ -77,3 +77,7 @@
 ## 1.5.0
 
 * Added a new dispatcher for *Messages*. Messages are simpler events that you can use to communcate between different parts of your application, without the need to use events, pipeline behaviours, etc.
+
+## 1.5.1
+
+* Fixed bug that made the dispatcher rebuild the QueryBuilder when data was not changed
